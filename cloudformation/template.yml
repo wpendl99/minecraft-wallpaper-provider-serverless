@@ -1,3 +1,24 @@
+Parameters:
+    Environment:
+        Type: String
+        Description: The environment (e.g., dev, prod)
+
+    AWS_ACCOUNT_ID:
+        Type: String
+        Description: The AWS account ID where the resources are deployed
+
+    AWS_CI_ROLE:
+        Type: String
+        Description: The IAM role name for the Lambda function
+
+    S3_BUCKET_NAME:
+        Type: String
+        Description: The name of the S3 bucket containing the Lambda code
+
+    version:
+        Type: String
+        Description: The version of the Lambda code package
+
 Resources:
     MCWallpaperLambdaFunction:
         Type: AWS::Lambda::Function
@@ -6,8 +27,8 @@ Resources:
             Handler: index.handler
             Role: !Sub arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_CI_ROLE}
             Code:
-                S3Bucket: !Sub ${S3_BUCKET_NAME}
-                S3Key: !Sub winecraft-wallpaper-lambda-${version}.zip
+                S3Bucket: !Ref S3_BUCKET_NAME
+                S3Key: !Sub "minecraft-wallpaper-lambda-${version}.zip"
             Runtime: nodejs20.x
             Environment:
                 Variables:
@@ -17,4 +38,4 @@ Resources:
         Type: AWS::ApiGateway::RestApi
         Properties:
             Name: !Sub "Minecraft-Wallpaper-Gateway-${Environment}"
-            Description: "Minecraft Wallpaper API for environment ${Environment}"
+            Description: !Sub "Minecraft Wallpaper API for environment ${Environment}"
