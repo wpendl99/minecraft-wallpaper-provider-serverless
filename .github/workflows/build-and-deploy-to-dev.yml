@@ -46,7 +46,11 @@ jobs:
     deploy:
         name: Deploy
         needs: build
+        permissions:
+            id-token: write
         runs-on: ubuntu-latest
+        environment:
+            name: development
         env:
             version: ${{ needs.build.outputs.version }}
         steps:
