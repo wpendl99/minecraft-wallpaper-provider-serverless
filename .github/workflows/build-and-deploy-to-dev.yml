@@ -21,7 +21,7 @@ jobs:
               with:
                   node-version: "20.x"
 
-            - name: set version
+            - name: Set version
               id: set_version
               run: |
                   version=$(date +'%Y%m%d.%H%M%S')
@@ -41,14 +41,16 @@ jobs:
 
             - name: Zip Lambda function
               run: |
-                  zip -r ./minecraft-wallpaper-lambda-$version.zip ./build  # Versioned filename with date and time
-                  echo "VERSION=$version" >> $GITHUB_ENV  # Save version to environment
+                  cd build
+                  zip -r ../minecraft-wallpaper-lambda-$version.zip .  # Versioned filename with date and time
+              env:
+                  version: ${{ steps.set_version.outputs.version }}
 
-            - name: Update dist artifact
+            - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
                   name: zipped-lambda
-                  path: ./minecraft-wallpaper-lambda-$version.zip
+                  path: ./minecraft-wallpaper-lambda-${{ steps.set_version.outputs.version }}.zip
 
     deploy:
         name: Deploy
@@ -77,14 +79,18 @@ jobs:
             - name: Upload Lambda Code to S3
               run: |
                   aws s3 cp ./build/minecraft-wallpaper-lambda-$version.zip s3://${{ secrets.S3_RELEASE_BUCKET_NAME }}/minecraft-wallpaper-lambda-$version.zip
+              env:
+                  version: ${{ needs.build.outputs.version }}
 
             - name: Deploy to Dev Environment
               run: |
                   aws cloudformation deploy \
                     --template-file ./cloudformation/template.yml \
                     --stack-name my-stack-dev \
-                    --parameter-overrides Environment=dev CodeS3Key=my-lambda-$VERSION.zip \
+                    --parameter-overrides Environment=dev AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT }} AWS_CI_ROLE=${{ secrets.CI_IAM_ROLE }} S3_BUCKET_NAME=${{ secrets.S3_RELEASE_BUCKET_NAME }} version=$version \
                     --capabilities CAPABILITY_NAMED_IAM
+              env:
+                  version: ${{ needs.build.outputs.version }}
 
     release:
         name: Release
