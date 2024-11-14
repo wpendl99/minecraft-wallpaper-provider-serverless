@@ -1,0 +1,20 @@
+Resources:
+    MCWallpaperLambdaFunction:
+        Type: AWS::Lambda::Function
+        Properties:
+            FunctionName: !Sub "Minecraft-Wallpaper-Function-${Environment}"
+            Handler: index.handler
+            Role: !Sub arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_CI_ROLE}
+            Code:
+                S3Bucket: !Sub ${S3_BUCKET_NAME}
+                S3Key: !Sub winecraft-wallpaper-lambda-${version}.zip
+            Runtime: nodejs20.x
+            Environment:
+                Variables:
+                    ENVIRONMENT: !Ref Environment
+
+    MCWallpaperApiGateway:
+        Type: AWS::ApiGateway::RestApi
+        Properties:
+            Name: !Sub "Minecraft-Wallpaper-Gateway-${Environment}"
+            Description: "Minecraft Wallpaper API for environment ${Environment}"
