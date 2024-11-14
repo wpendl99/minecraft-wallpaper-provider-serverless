@@ -34,6 +34,7 @@ jobs:
             - name: Zip Lambda function
               run: |
                   mkdir build
+                  cp -r ./src/* ./build
                   zip -r ./build/minecraft-wallpaper-lambda-$version.zip .  # Versioned filename with date and time
                   echo "VERSION=$version" >> $GITHUB_ENV  # Save version to environment
 
