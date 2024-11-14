@@ -65,7 +65,7 @@ jobs:
 
             - name: Upload Lambda Code to S3
               run: |
-                  aws s3 cp ./build/minecraft-wallpaper-lambda-$version.zip s3://${{ secrets.S3_BUCKET_NAME }}/minecraft-wallpaper-lambda-$version.zip
+                  aws s3 cp ./build/minecraft-wallpaper-lambda-$version.zip s3://${{ secrets.S3_RELEASE_BUCKET_NAME }}/minecraft-wallpaper-lambda-$version.zip
 
             - name: Deploy to Dev Environment
               run: |
