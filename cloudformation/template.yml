@@ -3,19 +3,19 @@ Parameters:
         Type: String
         Description: The environment (e.g., dev, prod)
 
-    AWS_ACCOUNT_ID:
+    AwsAccountId:
         Type: String
         Description: The AWS account ID where the resources are deployed
 
-    AWS_CI_ROLE:
+    AwsCiRole:
         Type: String
         Description: The IAM role name for the Lambda function
 
-    S3_BUCKET_NAME:
+    S3BucketName:
         Type: String
         Description: The name of the S3 bucket containing the Lambda code
 
-    version:
+    Version:
         Type: String
         Description: The version of the Lambda code package
 
@@ -25,10 +25,10 @@ Resources:
         Properties:
             FunctionName: !Sub "Minecraft-Wallpaper-Function-${Environment}"
             Handler: index.handler
-            Role: !Sub arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_CI_ROLE}
+            Role: !Sub arn:aws:iam::${AwsAccountId}:role/${AwsCiRole}
             Code:
-                S3Bucket: !Ref S3_BUCKET_NAME
-                S3Key: !Sub "minecraft-wallpaper-lambda-${version}.zip"
+                S3Bucket: !Ref S3BucketName
+                S3Key: !Sub "minecraft-wallpaper-lambda-${Version}.zip"
             Runtime: nodejs20.x
             Environment:
                 Variables:

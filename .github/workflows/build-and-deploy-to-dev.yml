@@ -98,7 +98,7 @@ jobs:
                   aws cloudformation deploy \
                     --template-file ./template.yml \
                     --stack-name my-stack-dev \
-                    --parameter-overrides Environment=dev AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT }} AWS_CI_ROLE=${{ secrets.CI_IAM_ROLE }} S3_BUCKET_NAME=${{ secrets.S3_RELEASE_BUCKET_NAME }} version=$version \
+                    --parameter-overrides Environment=dev AwsAccountId=${{ secrets.AWS_ACCOUNT }} AwsCiRole=${{ secrets.CI_IAM_ROLE }} S3BucketName=${{ secrets.S3_RELEASE_BUCKET_NAME }} Version=$version \
                     --capabilities CAPABILITY_NAMED_IAM
               env:
                   version: ${{ needs.build.outputs.version }}
