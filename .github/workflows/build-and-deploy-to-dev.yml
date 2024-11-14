@@ -86,6 +86,7 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: cloudformation-template
+                  path: cloudformation
 
             - name: Upload Lambda Code to S3
               run: |
@@ -95,11 +96,13 @@ jobs:
 
             - name: Deploy to Dev Environment
               run: |
+                  set -x
                   aws cloudformation deploy \
-                    --template-file ./template.yml \
+                    --template-file ./cloudformation/template.yml \
                     --stack-name my-stack-dev \
                     --parameter-overrides Environment=dev AwsAccountId=${{ secrets.AWS_ACCOUNT }} AwsCiRole=${{ secrets.CI_IAM_ROLE }} S3BucketName=${{ secrets.S3_RELEASE_BUCKET_NAME }} Version=$version \
                     --capabilities CAPABILITY_NAMED_IAM
+                    --no-fail-on-empty-changeset
               env:
                   version: ${{ needs.build.outputs.version }}
 
