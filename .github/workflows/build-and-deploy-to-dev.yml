@@ -35,7 +35,6 @@ jobs:
               run: |
                   mkdir -p build
                   cp -r src/* build/
-                  cp -r node_modules build/
                   cp package.json build/
                   cp package-lock.json build/
                   cp version.json build/
