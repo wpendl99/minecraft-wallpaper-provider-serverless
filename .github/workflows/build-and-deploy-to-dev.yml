@@ -31,18 +31,25 @@ jobs:
             - name: Install dependencies
               run: npm install
 
+            - name: Prepare Lambda Build function
+              run: |
+                  mkdir -p build
+                  cp -r src/* build/
+                  cp -r node_modules build/
+                  cp package.json build/
+                  cp package-lock.json build/
+                  cp version.json build/
+
             - name: Zip Lambda function
               run: |
-                  mkdir build
-                  cp -r ./src/* ./build
-                  zip -r ./build/minecraft-wallpaper-lambda-$version.zip .  # Versioned filename with date and time
+                  zip -r ./minecraft-wallpaper-lambda-$version.zip ./build  # Versioned filename with date and time
                   echo "VERSION=$version" >> $GITHUB_ENV  # Save version to environment
 
             - name: Update dist artifact
               uses: actions/upload-artifact@v4
               with:
                   name: zipped-lambda
-                  path: build/minecraft-wallpaper-lambda-$version.zip
+                  path: ./minecraft-wallpaper-lambda-$version.zip
 
     deploy:
         name: Deploy
